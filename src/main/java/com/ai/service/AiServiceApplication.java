@@ -1,4 +1,4 @@
-package com.ai.service.demo;
+package com.ai.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

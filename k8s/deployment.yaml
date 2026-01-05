@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: springboot-genai
+  labels:
+    app: springboot-genai
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: springboot-genai
+  template:
+    metadata:
+      labels: 
+        app: springboot-genai
+    spec:
+      containers:
+        - name: springboot-genai
+          image: ai-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: AI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gemini-api-secret
+                  key: GEMINI_API_KEY
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits: 
+              memory: "512Mi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 20
